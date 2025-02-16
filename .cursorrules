@@ -1,0 +1,31 @@
+# .cursorrules
+
+ Rule 1: Live Trading Logic Priority
+ -------------------------------------
+ When making any modifications that improve live trading logic or
+ the trading decision-making process, ensure that changes are applied
+ only to the live trading bot's code (e.g., src/trading_bot.py) or to shared
+ modules (e.g., src/common/trading_logic.py), and not to the backtesting
+ files (e.g., src/backtester.py), unless explicitly specified for
+ backtesting improvements.
+
+ Rule 2: Clear Separation
+ --------------------------
+ - Changes affecting real-time trading operations must be isolated to the live bot.
+ - Edits to backtesting code should only be made when addressing issues specific to the
+   simulation, data visualization, or performance metrics in the backtesting environment.
+
+ Rule 3: Verification Before Modification
+ -------------------------------------------
+ Always verify the target file before applying changes:
+ - For live trading improvements: target src/trading_bot.py or shared modules.
+ - For backtesting enhancements: target src/backtester.py only when explicitly required.
+
+ Rule 4: Clarification and Confirmation
+ ----------------------------------------
+ In case of ambiguous requests regarding which environment to improve,
+ explicitly request clarification before proceeding with file edits.
+
+ By using these rules, inadvertent modifications to the wrong parts of the codebase
+ will be minimized, ensuring consistency between live trading operations and
+ backtesting results. 
