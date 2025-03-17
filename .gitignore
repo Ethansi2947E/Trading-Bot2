@@ -33,3 +33,9 @@ htmlcov/
 # Operating System
 .DS_Store
 Thumbs.db 
+
+# Database files
+trading_data.db
+*.db
+*.sqlite
+*.sqlite3 
