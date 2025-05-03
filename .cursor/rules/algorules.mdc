@@ -1,0 +1,419 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# Trading Algorithm Python Code Standards and Best Practices
+
+## 1. Code Style Refinements
+
+### Naming Conventions:
+- **Functions and variables:** snake_case (e.g., `calculate_profit`, `trade_volume`)
+- **Classes:** CamelCase (e.g., `TradeExecutor`)
+- **Constants:** UPPER_CASE with underscores (e.g., `MAX_TRADES_PER_DAY`)
+- **Modules:** lowercase with underscores (e.g., `trade_utils`)
+
+### File Naming:
+- Use kebab-case (e.g., `trade-algorithm.py`, `data-fetcher.py`)
+
+### Line Length:
+- Limit lines to 80 characters for readability
+
+### Spacing:
+- Two blank lines between top-level functions and classes
+- One blank line between methods within a class
+- Spaces around operators (e.g., `x = y + z`)
+- No spaces immediately inside parentheses (e.g., `func(x, y)` not `func( x, y )`)
+
+### Indentation:
+- Use 4 spaces (no tabs)
+
+### Imports:
+- Group imports: standard library, third-party, then local
+- Avoid wildcard imports (e.g., use `import pandas` instead of `from pandas import *`)
+- One import per line
+
+### Documentation:
+- Include docstrings (Google style preferred) for all public modules, classes, and functions
+- Example:
+  
+  ```python
+  def fetch_market_data(symbol):
+      """Fetches market data for a given symbol.
+
+      Args:
+          symbol (str): The trading symbol (e.g., 'AAPL').
+
+      Returns:
+          dict: Market data including price and volume.
+      """
+  ```
+
+## 2. Best Practices for Trading Algorithms
+
+### Modularity:
+- Break code into small, reusable functions (e.g., separate data fetching, trade logic, and risk management)
+- Aim for functions under 30 lines
+
+### Error Handling:
+- Use try-except blocks for API calls, file I/O, and external data sources
+- Log errors with context (e.g., using `logging` module) instead of printing
+
+### Performance:
+- Use efficient data structures (e.g., `numpy` arrays for numerical data, `collections.deque` for queues)
+- Minimize API calls with caching (e.g., using `functools.lru_cache`)
+- Profile code with `cProfile` to identify bottlenecks
+
+### Security:
+- Use environment variables for API keys and credentials (e.g., via `os.environ` or `python-dotenv`)
+- Validate and sanitize all external inputs (e.g., trade amounts, symbols)
+
+### Logging:
+- Use the `logging` module over `print` for debugging and monitoring
+- Example:
+  
+  ```python
+  import logging
+  logging.basicConfig(level=logging.INFO)
+  logging.info("Trade executed: %s", trade_details)
+  ```
+
+### Data Handling:
+- Use `pandas` for time-series data and ensure proper indexing (e.g., timestamps)
+- Handle missing data gracefully (e.g., `df.dropna()` or interpolation)
+
+## 3. Testing and Validation
+
+### Unit Testing:
+- Write tests for all core functions using `unittest` or `pytest`
+- Example: Test trade calculation logic with mock data
+
+### Integration Testing:
+- Test end-to-end workflows (e.g., data fetch to trade execution)
+- Simulate market conditions with historical data
+
+### Test Coverage:
+- Aim for 90%+ coverage on critical components (e.g., risk management, order placement)
+
+### Mocking:
+- Use `unittest.mock` to mock API responses for repeatable tests
+
+### Assertions:
+- Add runtime checks (e.g., `assert trade_amount > 0`) to catch invalid states early
+
+## 4. Trading Algorithm Specifics
+
+### Algorithm Structure:
+- Organize code into logical components: data ingestion, signal generation, trade execution, and risk management
+
+- Example:
+  
+  ```python
+  class TradingAlgorithm:
+      def __init__(self, capital):
+          self.capital = capital
+
+      def generate_signals(self, data):
+          """Generate buy/sell signals from market data."""
+          pass
+
+      def execute_trade(self, signal):
+          """Execute trades based on signals."""
+          pass
+  ```
+
+### Risk Management:
+- Implement stop-loss and position sizing logic
+- Example: Limit position size to 2% of capital
+
+### Backtesting:
+- Include a backtesting framework (e.g., using `backtrader` or custom implementation)
+- Validate performance with metrics like Sharpe ratio
+
+### Real-Time Monitoring:
+- Add logging or metrics collection for live trading (e.g., profit/loss tracking)
+
+## 5. AI Behavior
+
+### Prompt Adherence:
+- Follow the developer's instructions precisely, overriding defaults if specified
+- If unclear, ask for clarification or use sensible defaults based on these rules
+
+### Context Awareness:
+- Match the style and structure of existing Python code in the project
+- Leverage trading-specific libraries (e.g., `pandas`, `numpy`, `ta-lib`) where appropriate
+
+### Code Generation:
+- Suggest complete, executable code snippets for trading tasks
+- Include comments explaining complex logic (e.g., signal generation)
+
+### Testing Suggestions:
+- Propose test cases for new code (e.g., edge cases like zero volume or negative prices)
+- Example:
+  
+  ```python
+  def test_calculate_profit():
+      assert calculate_profit(100, 110) == 10, "Profit calculation failed"
+  ```
+
+### Performance and Safety:
+- Warn about potential performance issues (e.g., unoptimized loops)
+- Avoid unsafe practices (e.g., unhandled exceptions in trade execution)
+
+---
+
+In this remote and test-worthy environment, prioritize code that is well-documented, thoroughly tested, and optimized for trading performance. Ensure all components are modular and maintainable for collaborative development.
+
+# Trading Bot Project Intelligence
+
+## Project Structure and Organization
+
+### Core Components
+- `src/mt5_handler.py`: Interface with MetaTrader 5
+- `src/trading_bot.py`: Main trading bot orchestrator
+- `src/risk_manager.py`: Risk management and position sizing
+- `src/strategy/`: Strategy implementations
+- `src/telegram/`: Telegram integration
+- `src/utils/`: Utility functions and tools
+
+### Configuration
+- `config/config.py`: Main configuration
+- `.env`: Environment variables for sensitive information
+
+## Coding Patterns
+
+### Asynchronous Programming
+- Use `async/await` for all I/O bound operations
+- Implement non-blocking operations for market data handling
+- Use asyncio.create_task() for parallel operations
+- Prefer asyncio.gather() for concurrent execution
+- Signal completion with asyncio.Future objects
+
+```python
+async def fetch_data(symbol, timeframe):
+    # Asynchronous data fetching
+    return await mt5_handler.get_market_data(symbol, timeframe)
+    
+async def process_symbols(symbols, timeframes):
+    tasks = []
+    for symbol in symbols:
+        for timeframe in timeframes:
+            tasks.append(fetch_data(symbol, timeframe))
+    return await asyncio.gather(*tasks)
+```
+
+### Error Handling
+- Use try/except blocks around external API calls
+- Implement graceful error recovery for MT5 connection issues
+- Log errors with context using loguru
+- Return None for failed operations instead of raising exceptions
+- Use detailed error messages with error codes where available
+
+```python
+async def safe_mt5_operation():
+    try:
+        result = await mt5_operation()
+        if result is None:
+            logger.error("Operation failed")
+            return None
+        return result
+    except Exception as e:
+        logger.exception(f"MT5 operation error: {str(e)}")
+        return None
+```
+
+### Logging Conventions
+- Use loguru for all logging
+- Log levels: DEBUG for detailed operations, INFO for normal operations, WARNING for potential issues, ERROR for failures
+- Include context in log messages (symbol, timeframe, operation)
+- Use structured logging for machine-parseable logs
+
+```python
+logger.info(f"Processing {symbol} on {timeframe}")
+logger.debug(f"Data received: {len(data)} candles")
+logger.warning(f"Signal validation failed for {symbol}: {reason}")
+logger.error(f"Failed to execute trade: {error_code} - {error_message}")
+```
+
+### Market Data Handling
+- Use pandas DataFrame for market data
+- Always ensure datetime index is properly formatted
+- Standardize column names to lowercase
+- Handle missing values explicitly
+- Cache data to minimize MT5 API calls
+
+```python
+def preprocess_data(data):
+    if data is None:
+        return None
+        
+    # Handle missing values
+    data = data.dropna()
+    
+    # Ensure datetime index
+    if not isinstance(data.index, pd.DatetimeIndex):
+        data.index = pd.to_datetime(data.index)
+        
+    # Standardize column names
+    data.columns = [col.lower() for col in data.columns]
+    
+    return data
+```
+
+### Strategy Implementation
+- Each strategy defines its own timeframe requirements
+- Strategies should handle multiple timeframes internally
+- Use a common interface for all strategies
+- Return structured signal objects for easier processing
+
+```python
+class MyStrategy(BaseStrategy):
+    def __init__(self):
+        super().__init__()
+        self.required_timeframes = ["M5", "H1"]
+        self.primary_timeframe = "M5"
+        
+    async def generate_signals(self, data):
+        # Generate signals using data for all required timeframes
+        signals = []
+        # Signal generation logic
+        return signals
+```
+
+### Risk Management
+- Use percentage-based position sizing
+- Implement account exposure limits
+- Include drawdown controls
+- Validate all trade parameters before execution
+
+```python
+def calculate_position_size(symbol, risk_percent, entry, stop_loss):
+    # Risk calculation logic
+    return position_size
+    
+def validate_trade(trade_params):
+    # Trade validation logic
+    return is_valid, reason
+```
+
+## Best Practices
+
+### Performance Optimization
+- Cache market data to reduce MT5 API calls
+- Use vectorized operations with pandas/numpy
+- Implement efficient data structures for lookups
+- Minimize object creation in hot loops
+- Use profiling to identify bottlenecks
+
+### Code Organization
+- Separate data fetching, processing, and analysis
+- Use dependency injection for easier testing
+- Implement clean interfaces between components
+- Keep functions small and focused
+- Use type hints for better IDE support
+
+### Testing Strategy
+- Unit test core functions like indicators and risk calculations
+- Implement integration tests for component interaction
+- Use historical data for strategy backtesting
+- Mock MT5 API for testing without live connection
+
+### Configuration Management
+- Use environment variables for sensitive information
+- Implement runtime configuration reloading
+- Provide sensible defaults for all parameters
+- Validate configuration at startup
+
+## Trading-Specific Intelligence
+
+### MT5 Integration
+- MT5 connections can be unstable - implement reconnection logic
+- MT5 API calls can hit rate limits - implement throttling
+- MT5 may return empty data frames - handle these cases explicitly
+- Symbol specifications vary between brokers - fetch dynamically
+- MT5 order types are numeric - use constants for clarity
+
+### Risk Management
+- Always validate trade parameters before execution
+- Implement maximum position size limits
+- Account for spread in stop loss calculations
+- Use proper lot size calculation based on account currency
+
+### Trade Execution
+- Validate orders before sending
+- Check for sufficient margin
+- Implement slippage handling
+- Store trade IDs for position management
+- Implement retry logic for failed orders
+
+### Market Data
+- Different timeframes have different data availability
+- Weekend gaps in forex data need special handling
+- Some indicators require minimum data points
+- Cache higher timeframe data longer than lower timeframes
+
+## User Preferences
+- Detailed trade notifications via Telegram
+- Comprehensive error logging
+- Conservative risk management settings
+- Modular strategy implementation
+- Clean code with detailed comments
+
+## Project Evolution
+- Started with basic MT5 connection and data fetching
+- Added risk management and position sizing
+- Implementing strategy framework and signal generation
+- Moving toward advanced order block detection
+- Building toward a complete SMC trading system
+
+## Known Challenges
+- MT5 API limitations for high-frequency operations
+- Complex pattern detection for SMC concepts
+- Efficient multi-timeframe data management
+- Strategy parameter optimization
+- Robust backtesting framework
+
+## Tool Usage
+- Use VS Code with Python extension for development
+- Implement structured logging for error tracking
+- Leverage pandas for data manipulation
+- Create utility scripts for common operations
+- Maintain detailed documentation for complex algorithms
+
+### Enhanced Data Handling Techniques
+- Implement explicit type checks before processing data: `if not isinstance(data, pd.DataFrame): return None`
+- Always initialize variables that might be unbound: `df = None` before conditional branches
+- Use dictionary comprehension for creating DataFrames from nested structures
+- Add robust error handling during DataFrame creation: `try: ... except Exception as e: logger.debug(f"Error: {str(e)}")`
+- Implement recursive dictionary traversal for complex nested structures
+
+### MT5 Data Format Handling
+- Check for both direct DataFrame and dictionary structures: `if isinstance(data, dict): ...`
+- Extract OHLC values using common field names: 'open', 'high', 'low', 'close', 'tick_volume', 'volume'
+- Check for nested dictionaries containing OHLC data: `for key, value in data.items(): if isinstance(value, dict) and 'open' in value: ...`
+- Try multiple common timeframe keys: 'M1', 'M5', 'M15', 'H1', '1m', '5m', '15m', '1h'
+- Convert dictionary OHLC data to DataFrame with proper datetime index: `df.index = pd.to_datetime(data['time'])`
+
+### Debug Logging Best Practices
+- Log data structure type and shape: `logger.debug(f"Type: {type(data)}, Shape: {data.shape if hasattr(data, 'shape') else 'N/A'}")`
+- Include sample rows for DataFrames: `logger.debug(f"Sample: {df.iloc[-3:].to_dict()}")`
+- Create visualizations of nested structures with indentation: `logger.debug(json.dumps(obj, indent=2))`
+- Add context to all log messages: `logger.debug(f"Processing {symbol}/{timeframe}: {message}")`
+- Log before and after key transformations to track data changes
+
+### Type Safety Practices
+- Explicitly convert potentially problematic types: `int(float(value))` for mixed numeric types
+- Use numpy arrays with explicit dtype for numeric operations: `np.array(values, dtype=float)`
+- Add pragma comments for necessary type ignoring: `# pyright: reportArgumentType=false`
+- Include explicit return type annotations: `def process_data(data: Dict) -> Optional[pd.DataFrame]:`
+- Add try/except around type conversions: `try: value = int(data) except (ValueError, TypeError): value = 0`
+
+### Data Validation Techniques
+- Check for empty DataFrames: `if df is None or df.empty or len(df) < min_required:`
+- Validate index types: `if not isinstance(df.index, pd.DatetimeIndex):`
+- Check for required columns: `if not all(col in df.columns for col in required_columns):`
+- Verify sufficient historical data: `if len(df) < lookback_period:`
+- Implement data structure consistency checks: `if 'open' in df.columns and 'close' in df.columns:`
+
+
+
