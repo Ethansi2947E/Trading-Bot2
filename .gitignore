@@ -71,3 +71,15 @@ Thumbs.db
 *.bak
 *.swp
 *~ 
+
+# Exports
+exports/
+
+# Clean Pycache
+cleanpycache/
+
+# Cursor
+.cursor/
+
+# Test
+test/ 
